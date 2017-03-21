@@ -43,6 +43,12 @@ describe "Authentication" do
       let(:new_user) { FactoryGirl.attributes_for(:user) }
       before { sign_in user , no_capybara:true }
 
+      describe  "cannot delete other users' posts" do
+        let(:other_user) { FactoryGirl.create(:user) }
+        before { visit user_path(other_user) }
+        it { should_not have_link('delete') }
+      end
+
       describe "using a 'new' action" do
         before { get new_user_path }
         specify { response.should redirect_to(root_path) }
@@ -51,7 +57,7 @@ describe "Authentication" do
       describe "using a 'create' action" do
         before { post users_path new_user }
         specify { response.should redirect_to(root_path) }
-      end            
+      end              
     end
 
     describe "for non-signed-in users" do

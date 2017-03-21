@@ -4,6 +4,18 @@ describe "Static pages" do
 
   subject { page }
 
+  describe "micropost pagination" do
+    let(:user) { FactoryGirl.create(:user) }
+    before do
+      31.times { FactoryGirl.create(:micropost, user: user) }
+      sign_in user
+      visit root_path
+    end
+    after { user.microposts.destroy_all }
+
+    it { should have_selector("div.pagination") }
+  end
+
   describe "Home page" do
     before { visit root_path }
 
